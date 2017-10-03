@@ -1,0 +1,15 @@
+import tensorflow as tf
+sess = tf.Session()
+
+filename_queue = tf.train.string_input_producer(["eagle.jpg"])
+reader = tf.WholeFileReader()
+key, value = reader.read(filename_queue)
+image=tf.image.decode_jpeg(value)
+flipImageVertical = tf.image.encode_jpeg(tf.image.flip_up_down(image))
+tf.global_variables_initializer().run(session=sess)
+coord = tf.train.Coordinator()
+threads = tf.train.start_queue_runners(coord=coord, sess=sess)
+example = sess.run(flipImageVertical)
+file=open ("eagleflipped.jpg", "wb+")
+file.write(flipImageVertical.eval(session=sess))
+file.close()
